@@ -1,0 +1,1 @@
+g++ "$1" -std=gnu++20 -O0 -g -fsanitize=address,undefined -fno-omit-frame-pointer
