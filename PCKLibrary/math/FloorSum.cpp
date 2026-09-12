@@ -1,5 +1,12 @@
-//sum_{0 <= i < n} floor((a i + b) / m)。n >= 0, m > 0
-//負の a, b に対応。O(log m)、答えは ll に収まること
+// sum_{0 <= i < n} floor((a i + b) / m)。n >= 0, m > 0
+// 負の a, b に対応。O(log m)、答えは ll に収まること
+// 使いどころ: 格子点数え上げや、一次式を整数除算した値の総和を n に比例せず求める場合。
+// 具体例: floorSum(5, 7, -3, 2)=-5。各項は 0, -1, -1, -1, -2 となる。
+// 使い方:
+// ll answer = floorSum(n, m, a, b); で i=0, ..., n-1 の floor((a*i+b)/m) を合計する。
+// a, b が負でも数学的 floor で処理する。n==0 は 0。
+// floorSumUnsigned は内部用で a, b>=0 の場合だけ直接呼べる。
+// a, b>=0 の floor sum を Euclid 型の変形で求める内部関数。
 ll floorSumUnsigned(ll n, ll m, ll a, ll b) {
     __int128_t ret = 0;
     while (true) {
@@ -13,6 +20,7 @@ ll floorSumUnsigned(ll n, ll m, ll a, ll b) {
     }
 }
 
+// 負の a, b も含め sum_{0<=i<n} floor((a*i+b)/m) を返す。
 ll floorSum(ll n, ll m, ll a, ll b) {
     assert(n >= 0 and m > 0);
     __int128_t ret = 0;

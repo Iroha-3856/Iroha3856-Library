@@ -1,9 +1,18 @@
-//有向・無向グラフの Euler 路。O(N + M)
-//成功時は M+1 頂点と M 個の edge ID、存在しなければ nullopt
+// 有向・無向グラフの Euler 路。O(N + M)
+// 成功時は M+1 頂点と M 個の edge ID、存在しなければ nullopt
+// 使い方:
+// 辺を入力順の {u, v} として directedEulerTrail(N, edges) または
+// undirectedEulerTrail(N, edges) へ渡す。返り値が nullopt なら全辺を一度ずつ通る路はない。
+// result.vertices が頂点列、result.edgeIds[i] が vertices[i] から次へ使った入力辺番号。
+// 空辺集合では N>0 なら頂点 0 のみ、N==0 なら番兵 -1 の頂点列を返す。
+// 使いどころ: 全辺をちょうど一度使う経路、文字列復元、de Bruijn 型の辺列復元。
+// 具体例: 無向辺 {0-1, 1-2} なら vertices={0, 1, 2}、edgeIds は対応する入力辺番号列。
+// 頂点次数の条件だけでなく、辺を持つ頂点が一つの連結成分にあることも内部で確認する。
 struct EulerTrailResult {
     vector<int> vertices, edgeIds;
 };
 
+// 有向辺列 edges をすべて一度ずつ使う Euler 路を返す。存在しなければ nullopt。
 optional<EulerTrailResult> directedEulerTrail(int N, const vector<pair<int, int>>& edges) {
     vector<vector<pair<int, int>>> G(N);
     vector<int> in(N), out(N), it(N);
@@ -37,6 +46,7 @@ optional<EulerTrailResult> directedEulerTrail(int N, const vector<pair<int, int>
     return EulerTrailResult{vs, es};
 }
 
+// 無向辺列 edges をすべて一度ずつ使う Euler 路を返す。存在しなければ nullopt。
 optional<EulerTrailResult> undirectedEulerTrail(int N, const vector<pair<int, int>>& edges) {
     vector<vector<pair<int, int>>> G(N);
     vector<int> degree(N), it(N);

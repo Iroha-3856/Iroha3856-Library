@@ -1,5 +1,13 @@
-//無向グラフの二辺連結成分・二重頂点連結成分。多重辺対応、O(N + M)
-//twoEdgeComponent は頂点の成分番号、vertexBlocks は各 block の頂点集合
+// 無向グラフの二辺連結成分・二重頂点連結成分。多重辺対応、O(N + M)
+// twoEdgeComponent は頂点の成分番号、vertexBlocks は各 block の頂点集合
+// 使い方:
+// BiconnectedComponents graph(N); graph.addEdge(u, v); を全辺に行って graph.build();
+// bridge は橋の edge ID、articulation は関節点、vertexBlocks は二重頂点連結成分。
+// twoEdgeComponent[v] は橋を除いた成分番号。bridgeTree() / blockCutTree() も構築後に呼ぶ。
+// 使いどころ: どの一辺・一頂点を失うと連結性が壊れるか、またはグラフを木状に縮約したい場合。
+// 具体例: 無向パス 0-1-2 では二辺とも橋、頂点1が関節点、橋を除くと三つの二辺連結成分になる。
+// bridgeTree の頂点は二辺連結成分、blockCutTree の頂点は block と関節点であり番号体系が異なる。
+// addEdge の返す ID と edges[id] を組にして読むと、bridge の元の端点を復元できる。
 struct BiconnectedComponents {
     int N, timer = 0;
     vector<pair<int, int>> edges;
@@ -7,13 +15,16 @@ struct BiconnectedComponents {
     vector<int> order, low, edgeStack, bridge, articulation, twoEdgeComponent;
     vector<vector<int>> vertexBlocks;
 
+    // 頂点数 n の空の無向グラフを作る。
     BiconnectedComponents(int n) : N(n), G(n) {}
+    // 無向辺 u-v を追加し、以後の結果で使う edge ID を返す。
     int addEdge(int u, int v) {
         int id = (int)edges.size();
         edges.push_back({u, v});
         G[u].push_back({v, id}); G[v].push_back({u, id});
         return id;
     }
+    // edgeStack から stopEdge までを取り出し、一つの二重頂点連結成分を確定する。
     void makeBlock(int stopEdge) {
         vector<int> vs;
         while (true) {
@@ -25,6 +36,7 @@ struct BiconnectedComponents {
         vs.erase(unique(vs.begin(), vs.end()), vs.end());
         vertexBlocks.push_back(vs);
     }
+    // DFS 木を辿り order/low を計算し、橋・関節点・block を抽出する内部関数。
     void dfs(int v, int parentEdge) {
         order[v] = low[v] = timer++;
         int children = 0;
@@ -50,6 +62,7 @@ struct BiconnectedComponents {
         if (cut) articulation.push_back(v);
         if (G[v].empty()) vertexBlocks.push_back({v});
     }
+    // 全連結成分を分解し、公開する各配列を再構築する。
     void build() {
         order.assign(N, -1); low.resize(N); timer = 0;
         bridge.clear(); articulation.clear(); vertexBlocks.clear(); edgeStack.clear();
@@ -71,6 +84,7 @@ struct BiconnectedComponents {
             C++;
         }
     }
+    // 二辺連結成分を頂点、元の橋を辺とする forest を返す。build 後に呼ぶ。
     vector<vector<int>> bridgeTree() const {
         int C = *max_element(twoEdgeComponent.begin(), twoEdgeComponent.end()) + 1;
         vector<vector<int>> T(C);
@@ -81,6 +95,7 @@ struct BiconnectedComponents {
         }
         return T;
     }
+    // block と関節点を頂点とする二部 forest を返す。build 後に呼ぶ。
     vector<vector<int>> blockCutTree() const {
         int B = (int)vertexBlocks.size();
         vector<int> cutId(N, -1);

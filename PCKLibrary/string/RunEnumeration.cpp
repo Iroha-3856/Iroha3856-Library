@@ -1,10 +1,17 @@
-//依存: string/SuffixArray.cpp
-//極大周期列 run を {l, r, 最小周期} として列挙。0-indexed [l, r)、O(N log N)
+// 依存: string/SuffixArray.cpp
+// 極大周期列 run を {l, r, 最小周期} として列挙。0-indexed [l, r)、O(N log N)
+// 使いどころ: 文字列中の反復を、開始位置ごとではなく極大な周期区間として重複なく扱う場合。
+// 具体例: s="ababab" には run {0, 6, 2} がある。周期2で左右へ延長できない区間 [0, 6) である。
+// 使い方:
+// auto runs = enumerateRuns(s); とすると各 [l, r) が周期 p を持ち、長さは 2p 以上。
+// run は左右へ同じ周期で延長できない極大区間で、同一区間でも最小周期だけを返す。
+// 結果は tuple の辞書順に整列・重複除去済み。周期文字列の列挙や反復構造の集計に使う。
 struct LongestCommonExtension {
     int N, log;
     vector<int> rank;
     vector<vector<int>> table;
 
+    // s の Suffix Array と LCP RMQ を構築する。
     LongestCommonExtension(const string& s) : N((int)s.size()) {
         vector<int> sa = suffixArray(s), lcp = lcpArray(s, sa);
         rank.resize(N);
@@ -19,6 +26,7 @@ struct LongestCommonExtension {
             }
         }
     }
+    // suffix s[i, N) と s[j, N) の最長共通接頭辞長を返す。
     int lcp(int i, int j) const {
         if (i == j) return N - i;
         int l = rank[i], r = rank[j];
@@ -28,6 +36,7 @@ struct LongestCommonExtension {
     }
 };
 
+// s の全 run を {左端, 右端, 最小周期} として辞書順で返す。
 vector<tuple<int, int, int>> enumerateRuns(const string& s) {
     int N = (int)s.size();
     if (N == 0) return {};

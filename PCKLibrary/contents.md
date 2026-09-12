@@ -26,7 +26,7 @@
 - 共通テンプレートにある `ll`、`INF`、`chmin`、`chmax` などは再定義しない。
 - 原則として 1 ファイルに 1 つのアルゴリズムまたはデータ構造を置く。ただし幾何の基本演算など、分離すると使いにくい一群はまとめてよい。
 - ファイル名と主要な型名は一致させ、`PascalCase` とする。数値型による別実装は `_integer`、`_double` のような接尾辞で区別してよい。
-- `[A]` 同士の依存は許可し、同じ処理を重複実装しない。依存がある場合はファイル先頭に `//依存: math/ExtGCD.cpp` の形式で書く。
+- `[A]` 同士の依存は許可し、同じ処理を重複実装しない。依存がある場合はファイル先頭に `// 依存: math/ExtGCD.cpp` の形式で書く。
 - 循環依存は作らない。依存先を含める順序だけで使用できる構成にする。
 - 整数幾何と浮動小数点幾何のように識別子が衝突する実装は、同時に使用しないことを各ファイルに明記する。
 - 解説だけを残す項目は `notes/` 以下の Markdown に置き、実装ファイルと区別する。
@@ -91,7 +91,15 @@ T rangeSum(const vector<T>& A, int l, int r) {
 ### コメントと検証
 
 - ファイル先頭に用途、計算量、添字と区間、前提条件を簡潔に書く。
+- ファイル先頭には「使いどころ」を書き、問題文や数式のどの形を見たら選ぶ実装か判断できるようにする。
+- 最小の具体例と期待される答えを一つ以上示し、添字、区間、符号、返り値の並びを手計算で確認できるようにする。
+- 専門用語は初出時にコード上の意味を説明し、類似ライブラリがある場合は選択基準も書く。
 - 必要に応じて、空入力、番兵値、オーバーフロー、精度、破壊的変更の有無も先頭に書く。
+- 行コメントは `// コメント` の形式とし、コメント記号の直後へ半角空白を 1 個入れる。
+- 各関数の直前に、その関数の役割を説明するコメントを置く。自明なコンストラクタ、演算子、内部補助関数も省略しない。
+- 公開関数では引数、返り値、副作用、失敗時の値、呼出し順と前提条件のうち、誤用に関係する事項を明記する。
+- 内部関数では、公開 API の説明を繰り返さず、再帰区間、保持する不変条件、親子への伝播方向など実装上の役割を書く。
+- ファイル先頭の「使い方」には、構築から答えを得るまでの呼出し順と、最小限のコード例を記載する。
 - コメントはコードを日本語へ言い換えるのではなく、式の向き、境界条件、実装上の理由を説明する。
 - 写経時に確認しやすいよう、長い証明や一般論は実装へ埋め込まず、必要なら `notes/` に分離する。
 - 完了した実装は、共通テンプレートと合わせて C++17 で警告なくコンパイルできる状態にする。
@@ -111,6 +119,8 @@ T rangeSum(const vector<T>& A, int l, int r) {
   - queue / deque 上のモノイド積、非可換演算の積順序
 - [x] `[B]` Binary Trie — `data_structure/BinaryTrie.cpp`
   - XOR 最小・最大、全体 XOR、個数管理
+- [x] `[B]` 64 分木 set — `data_structure/Set64.cpp`
+  - 固定整数 universe、挿入・削除、直前・直後の要素を `O(log_64 N)` で検索
 - [x] `[B]` Treap / Randomized BST — `data_structure/ImplicitTreap.cpp`
   - split / merge、列への挿入・削除・反転
 - [x] `[C]` Segment Tree Beats — `data_structure/SegmentTreeBeats.cpp`
@@ -209,8 +219,10 @@ T rangeSum(const vector<T>& A, int l, int r) {
 - [x] `[C]` Pollard's rho 素因数分解 — `math/NumberTheory64.cpp`
 - [x] `[C]` 離散対数（Baby-step Giant-step）— `math/DiscreteLogarithm.cpp`
 - [x] `[C]` 原始根・mod 平方根（Tonelli–Shanks）・離散 k 乗根 — `math/ModularRoot.cpp`
-- [x] `[C]` 素数計数・乗法的関数の和 — `math/PrimeSummatory.cpp`
-  - Lucy DP / Min_25 sieve、商列挙との依存を明記する
+- [x] `[C]` 素数計数・素数和 — `math/PrimeSummatory.cpp`
+  - Lucy DP、`N / i` として現れる引数に対する query
+- [x] `[C]` 一般の乗法的関数の prefix sum — `math/MultiplicativePrefixSum.cpp`
+  - Min_25 sieve、素数上の値の prefix と素数冪上の値を callback で与える
 
 ### 5.2 線形代数・多項式
 

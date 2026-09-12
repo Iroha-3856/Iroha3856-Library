@@ -1,10 +1,17 @@
-//Lucy DP による pi(N), sum_{p<=N} p と、商列挙再帰による sum phi, sum mu
-//PrimeSummatory は概ね O(N^(3/4) / log N)、Phi/Mu は前計算 L 後 O(sqrt N) 状態
+// Lucy DP による pi(N) と sum_{p<=N} p。概ね O(N^(3/4) / log N)、空間 O(sqrt N)
+// 使いどころ: N が大きく篩を N まで持てないとき、素数個数または素数和を求める場合。
+// 具体例: PrimeSummatory(10) では primeCount(10)=4、primeSum(10)=17。
+// 使い方:
+// PrimeSummatory table(N); の後 table.primeCount(N), table.primeSum(N) で N 以下を集計する。
+// primeCount(x)/primeSum(x) の x は N/i として現れる値、または x<=sqrt(N) に限る。
+// 一般の乗法的関数の総和には math/MultiplicativePrefixSum.cpp を使う。
+// primeSum は答えが ll に収まる範囲で使い、同じ N に対する複数 query では表を再利用する。
 struct PrimeSummatory {
     ll N;
     vector<ll> value, count, sum;
     unordered_map<ll, int> id;
 
+    // 指定 N の商集合について、素数個数と素数和の Lucy DP を構築する。
     PrimeSummatory(ll n) : N(n) {
         for (ll l = 1; l <= N;) {
             ll x = N / l;
@@ -24,64 +31,14 @@ struct PrimeSummatory {
             }
         }
     }
+    // x 以下の素数個数を返す。x は構築時の商集合に含まれる必要がある。
     ll primeCount(ll x) const {
         if (x < 2) return 0;
         return count[id.at(x)];
     }
+    // x 以下の素数の総和を返す。x は構築時の商集合に含まれる必要がある。
     ll primeSum(ll x) const {
         if (x < 2) return 0;
         return sum[id.at(x)];
-    }
-};
-
-struct PhiMobiusSummatory {
-    int limit;
-    vector<ll> phiPrefix, mobiusPrefix;
-    unordered_map<ll, ll> phiMemo, mobiusMemo;
-
-    PhiMobiusSummatory(int L) : limit(L), phiPrefix(L + 1), mobiusPrefix(L + 1) {
-        vector<int> primes, phi(L + 1), mu(L + 1);
-        vector<bool> composite(L + 1);
-        if (L >= 1) phi[1] = mu[1] = 1;
-        for (int i = 2; i <= L; i++) {
-            if (!composite[i]) primes.push_back(i), phi[i] = i - 1, mu[i] = -1;
-            for (int p : primes) {
-                if ((ll)i * p > L) break;
-                composite[i * p] = true;
-                if (i % p == 0) {
-                    phi[i * p] = phi[i] * p;
-                    mu[i * p] = 0;
-                    break;
-                }
-                phi[i * p] = phi[i] * (p - 1);
-                mu[i * p] = -mu[i];
-            }
-        }
-        for (int i = 1; i <= L; i++) {
-            phiPrefix[i] = phiPrefix[i - 1] + phi[i];
-            mobiusPrefix[i] = mobiusPrefix[i - 1] + mu[i];
-        }
-    }
-    ll sumPhi(ll n) {
-        if (n <= limit) return phiPrefix[(int)n];
-        if (phiMemo.count(n)) return phiMemo[n];
-        ll ret = (ll)((__int128_t)n * (n + 1) / 2);
-        for (ll l = 2; l <= n;) {
-            ll q = n / l, r = n / q + 1;
-            ret -= (r - l) * sumPhi(q);
-            l = r;
-        }
-        return phiMemo[n] = ret;
-    }
-    ll sumMobius(ll n) {
-        if (n <= limit) return mobiusPrefix[(int)n];
-        if (mobiusMemo.count(n)) return mobiusMemo[n];
-        ll ret = 1;
-        for (ll l = 2; l <= n;) {
-            ll q = n / l, r = n / q + 1;
-            ret -= (r - l) * sumMobius(q);
-            l = r;
-        }
-        return mobiusMemo[n] = ret;
     }
 };

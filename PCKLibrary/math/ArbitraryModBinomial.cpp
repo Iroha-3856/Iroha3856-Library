@@ -1,6 +1,13 @@
-//依存: math/ExtGCD.cpp
-//任意の正の mod に対する C(n, k)。O(k * ω(mod) log n + sqrt(mod))
-//k が小さい場合用。各素因数を除いた分母だけを逆元にする
+// 依存: math/ExtGCD.cpp
+// 任意の正の mod に対する C(n, k)。O(k * ω(mod) log n + sqrt(mod))
+// k が小さい場合用。各素因数を除いた分母だけを逆元にする
+// 使いどころ: 法が合成数で通常の階乗逆元を使えず、k または n-k が十分小さい二項係数。
+// 具体例: binomialArbitraryMod(10, 3, 12)=0。C(10, 3)=120 を合成数 12 で割った余りである。
+// 使い方:
+// ll value = binomialArbitraryMod(n, k, mod); で C(n, k) mod mod を得る。
+// mod は素数でなくてよく、k<0 または k>n なら 0。n>=0, mod>0 を満たすこと。
+// k に比例するので、巨大な k には素因数冪ごとの高速な二項係数など別手法を使う。
+// 合成数を含む任意の正の法 mod で二項係数 C(n, k) を返す。
 ll binomialArbitraryMod(ll n, ll k, ll mod) {
     assert(n >= 0 and mod > 0);
     if (k < 0 or n < k or mod == 1) return 0;

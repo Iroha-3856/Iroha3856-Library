@@ -1,5 +1,12 @@
-//Gauss-Jordan 消去。consistent=false は解なし
-//particular は特解、basis は斉次解空間の基底。計算量 O(H W min(H, W))
+// Gauss-Jordan 消去。consistent=false は解なし
+// particular は特解、basis は斉次解空間の基底。計算量 O(H W min(H, W))
+// 使いどころ: 実数・有限体・GF(2) 上の連立一次方程式で、解の存在、一例、自由度をまとめて得る場合。
+// 具体例: x+y=3, x-y=1 なら particular={2, 1}、basis は空で一意解になる。
+// 使い方:
+// A x = b に対し、modint 等の体なら linearEquationField(A, b)、実数なら linearEquationReal(A, b)。
+// GF(2) は各行を bitset<MAX> に詰めて linearEquationGF2<MAX>(A, b, 変数数) を呼ぶ。
+// consistent を確認後、全解は particular + basis の任意線形結合。basis.empty() なら一意解。
+// 整数型を Field 版へ渡さない。実数版の第3引数で零判定 eps を調整できる。
 template<class T>
 struct LinearSolution {
     bool consistent;
@@ -9,6 +16,7 @@ struct LinearSolution {
 };
 
 template<class T>
+// 体 T 上で A*x=b を解き、特解・斉次解基底・rank を返す。
 LinearSolution<T> linearEquationField(vector<vector<T>> A, vector<T> b) {
     int H = (int)A.size(), W = H ? (int)A[0].size() : 0;
     vector<int> pivot;
@@ -44,6 +52,7 @@ LinearSolution<T> linearEquationField(vector<vector<T>> A, vector<T> b) {
     return {true, rank, solution, basis};
 }
 
+// 実数上で部分 pivot 選択と eps 零判定を使って A*x=b を解く。
 LinearSolution<long double> linearEquationReal(vector<vector<long double>> A,
                                                 vector<long double> b,
                                                 long double eps = 1e-12L) {
@@ -81,8 +90,9 @@ LinearSolution<long double> linearEquationReal(vector<vector<long double>> A,
     return {true, rank, solution, basis};
 }
 
-//A は各式の係数 bitset、b は右辺。変数数 W <= MAX
+// A は各式の係数 bitset、b は右辺。変数数 W <= MAX
 template<int MAX>
+// GF(2) 上の係数行列を bitset 行として受け、A*x=b の解空間を返す。
 LinearSolution<int> linearEquationGF2(vector<bitset<MAX>> A, vector<int> b, int W) {
     int H = (int)A.size(), rank = 0;
     vector<int> pivot;

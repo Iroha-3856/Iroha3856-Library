@@ -1,5 +1,13 @@
-//Manacher 法。odd[i] は中心 i の奇数半径、even[i] は中心 i-1,i の偶数半径
-//回文長はそれぞれ 2*odd[i]-1, 2*even[i]。O(N)
+// Manacher 法。odd[i] は中心 i の奇数半径、even[i] は中心 i-1, i の偶数半径
+// 回文長はそれぞれ 2*odd[i]-1, 2*even[i]。O(N)
+// 使いどころ: 全中心の最長回文や、任意区間が回文かを線形前計算後に判定する場合。
+// 具体例: s="abba" では even[2]=2 なので、中心境界 1|2 の回文区間は [0, 4)。
+// 使い方:
+// auto [odd, even] = manacher(s); とする。
+// 中心 i の最大奇数回文は [i-odd[i]+1, i+odd[i])。
+// 中心境界 i-1|i の最大偶数回文は [i-even[i], i+even[i])。
+// ある区間が回文かは、その中心の半径が必要長以上かで O(1) 判定できる。
+// 各文字中心の奇数回文半径と、各文字間中心の偶数回文半径を返す。
 pair<vector<int>, vector<int>> manacher(const string& s) {
     int N = (int)s.size();
     vector<int> odd(N), even(N);

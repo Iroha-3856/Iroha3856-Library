@@ -1,5 +1,13 @@
-//依存: math/NumberTheory64.cpp, math/DiscreteLogarithm.cpp, math/ExtGCD.cpp
-//以下は素数 p に対する原始根・平方根・k 乗根。解なしは -1
+// 依存: math/NumberTheory64.cpp, math/DiscreteLogarithm.cpp, math/ExtGCD.cpp
+// 以下は素数 p に対する原始根・平方根・k 乗根。解なしは -1
+// 使いどころ: 素数 mod 上で x^2=a や x^k=a の解を一つ復元する場合。
+// 具体例: modSqrtPrime(10, 13) は 6 または 7。どちらも二乗すると 10 mod 13 になる。
+// 使い方:
+// primitiveRootPrime(p) は素数 p の最小とは限らない原始根を一つ返す。
+// modSqrtPrime(a, p) は x^2=a、discreteKthRootPrime(a, k, p) は x^k=a の解を一つ返す。
+// 後二つは解なしなら -1。返った x は必ず式へ代入して検算でき、別解の列挙はしない。
+// p は素数、k>=1。k 乗根は内部で離散対数を使うため O(sqrt(p)) の領域を要する。
+// 素数 p の乗法群を生成する原始根を一つ返す。
 ll primitiveRootPrime(ll p) {
     assert(p >= 2 and isPrime64(p));
     if (p == 2) return 1;
@@ -17,6 +25,7 @@ ll primitiveRootPrime(ll p) {
     }
 }
 
+// 素数 p に対して x^2=a mod p の解を一つ返し、存在しなければ -1。
 ll modSqrtPrime(ll a, ll p) {
     assert(p >= 2 and isPrime64(p));
     a %= p;
@@ -43,6 +52,7 @@ ll modSqrtPrime(ll a, ll p) {
     return x;
 }
 
+// 素数 p に対して x^k=a mod p の解を一つ返し、存在しなければ -1。
 ll discreteKthRootPrime(ll a, ll k, ll p) {
     assert(k >= 1 and p >= 2 and isPrime64(p));
     a %= p;

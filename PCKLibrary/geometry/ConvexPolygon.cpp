@@ -1,5 +1,13 @@
-//依存: geometry/Geometry2D_double.cpp
-//反時計回り凸多角形。点包含 O(log N)、直径 O(N)、cut / 接点列挙 O(N)
+// 依存: geometry/Geometry2D_double.cpp
+// 反時計回り凸多角形。点包含 O(log N)、直径 O(N)、cut / 接点列挙 O(N)
+// 使いどころ: 凸包を作った後、点包含・最遠点対・直線による切断・外点からの接点を求める場合。
+// 具体例: P={(0, 0), (2, 0), (2, 2), (0, 2)} では containsConvex(P, (1, 1))=2、(2, 1) なら 1。
+// 使い方:
+// P は反時計回りの凸多角形とする。containsConvex(P, p) は外部0・辺上1・内部2。
+// convexDiameter(P) は {端点添字i, j, 距離}。P は空でないこと。
+// convexCut(P, {a, b}) は有向直線 a->b の左側を残し、新しい反時計回り多角形を返す。
+// tangentVertices(P, p) は外点 p からの支持線が触れる頂点番号を返し、非狭義凸では複数あり得る。
+// 反時計回り凸多角形 P に対する p の位置を外0・辺上1・内部2で返す。
 int containsConvex(const Polygon& P, Point p) {
     int N = (int)P.size();
     if (N == 0) return 0;
@@ -18,6 +26,7 @@ int containsConvex(const Polygon& P, Point p) {
     return ccw(P[l], P[r], p) > 0 ? 2 : 0;
 }
 
+// 凸多角形 P の直径を実現する {頂点i, 頂点j, 距離} を返す。
 tuple<int, int, long double> convexDiameter(const Polygon& P) {
     int N = (int)P.size();
     assert(N > 0);
@@ -33,7 +42,7 @@ tuple<int, int, long double> convexDiameter(const Polygon& P) {
     return {bi, bj, sqrtl(best)};
 }
 
-//有向直線 l.a -> l.b の左側を残す
+// 有向直線 l.a->l.b の左閉半平面と凸多角形 P の共通部分を返す。
 Polygon convexCut(const Polygon& P, Line l) {
     Polygon ret;
     for (int i = 0; i < (int)P.size(); i++) {
@@ -46,7 +55,7 @@ Polygon convexCut(const Polygon& P, Line l) {
     return ret;
 }
 
-//外点 p から引いた支持線が接する頂点。非狭義凸では複数返りうる
+// 外点 p から P へ引いた支持線が接する頂点番号を返す。
 vector<int> tangentVertices(const Polygon& P, Point p) {
     vector<int> ret;
     int N = (int)P.size();

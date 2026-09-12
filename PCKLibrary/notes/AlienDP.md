@@ -1,27 +1,11 @@
 # Alien DP / Lagrangian relaxation
 
-個数 `k` を固定した最小化問題の値を `F(k)` とする。`F` が離散凸なら、制約を外して各要素へ罰金 `lambda` を加えた
+$f(x)$ が凸な関数（傾きが単調減少）だとする。
 
-`G(lambda) = min_k (F(k) + lambda * k)`
+$g(\lambda) = \max_x (f(x) - \lambda * x)$ とおくと、$g(\lambda)$ は $f(x)$ に傾き $\lambda$ の接線を引いたときの $y$ 切片の値と等しい。
 
-を解くことで `F` の傾きを探索できる。DP の各状態には `{罰金込みの値, 使用個数}` を持たせ、値が等しい場合は欲しい側の個数を選ぶ。
+ところで、$f(X) = \min_\lambda g(\lambda) + \lambda X$ であるので、$g(\lambda) + \lambda X$ が凹（傾きが単調増加）であることを利用すれば、ある値 $X$ での $f$ の評価値 $f(X)$ から計算できる。
 
-## 実装形
+凹関数の最小値を求めるにあたっては、傾きが負から正になる点を二分探索により求めるのがよい。
 
-```cpp
-//solve(lambda) は {min(F(k) + lambda*k), その中で最大の k}
-template<class Solve>
-ll alienDP(int wanted, ll low, ll high, const Solve& solve) {
-    while (low < high) {
-        ll mid = (low + high) / 2;
-        if (solve(mid).second <= wanted) high = mid;
-        else low = mid + 1;
-    }
-    auto [value, count] = solve(low);
-    return value - low * wanted;
-}
-```
-
-この形が正しいのは `F` の離散凸性が保証され、`wanted` が傾き `low` の劣勾配に含まれる場合である。単に「使用個数が単調に見える」だけでは、飛ばされた個数の値を復元できない。
-
-Monge DAG の d 辺最短路では、辺数ごとの最短距離 `F(k)` が凸になることを示してから適用する。`solve(lambda)` は各辺重みに `lambda` を加えた通常の最短路であり、同距離なら辺数が多い方を採用する。最後に `lambda * d` を引く。
+典型的な応用例：Monge d edge shortest path
