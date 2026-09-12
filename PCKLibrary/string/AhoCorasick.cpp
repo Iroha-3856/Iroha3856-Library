@@ -4,7 +4,7 @@
 // 具体例: "a", "aa" を登録して text="aaa" を検索すると、各出現回数は 3, 2。
 // 使い方:
 // AhoCorasick<> ac; int id = ac.addPattern(pattern); として全パターンを登録してから ac.build();
-// vector<ll> count = ac.countMatches(text); の count[id] が重なりを含む出現回数。
+// vector<ll> count = ac.countMatches(text); の count[id] が重なりを含む出現回数。空 pattern は |text|+1 回。
 // build 後は遷移表が完成形へ変わるためパターンを追加しない。文字は [BASE, BASE+SIGMA) に限る。
 // 英大文字などは AhoCorasick<26, 'A'>、二進文字列なら AhoCorasick<2, '0'> とする。
 template<int SIGMA = 26, char BASE = 'a'>
@@ -60,6 +60,7 @@ struct AhoCorasick {
     // text 内で各登録パターンが現れる回数を ID 順で返す。build 後に呼ぶ。
     vector<ll> countMatches(const string& s) const {
         vector<ll> visit(node.size()), ret(patterns);
+        visit[0] = 1;
         int v = 0;
         for (char c : s) {
             int x = c - BASE;
