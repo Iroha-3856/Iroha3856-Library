@@ -6,6 +6,7 @@
 // auto [dp, opt] = knuthOptimization<T>(N, INF, cost); で区間 [0, N) の全 DP を求める。
 // 空区間と長さ1は 0、長さ2以上では l<k<r を試す定義。答えは dp[0][N]。
 // cost(l, r) は分割点 k に依存しない区間追加コストで、opt の包含単調性を満たす必要がある。
+// 長さ2以上の各区間に有限な最適遷移が存在し、dp+dp+cost の計算が T の範囲内に収まること。
 // opt[l][r] を再帰的に辿れば最適分割を復元できる。
 template<class T, class Cost>
 // Knuth の opt 包含単調性を使い、全区間の dp と最適分割点を返す。
