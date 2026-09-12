@@ -43,10 +43,11 @@ ll powerCapped(ll a, ll n, ll cap) {
 
 // min(a↑↑height, cap) を返し、指数が十分大きいかの判定に使う。
 ll towerCapped(ll a, ll height, ll cap) {
-    if (cap <= 1) return cap;
-    if (height == 0) return 1;
+    if (cap == 0) return 0;
+    if (height == 0) return min(1LL, cap);
+    if (a == 0) return min(height % 2 == 0 ? 1LL : 0LL, cap);
+    if (cap == 1) return 1;
     if (height == 1) return min(a, cap);
-    if (a == 0) return height % 2 == 0 ? 1 : 0;
     if (a == 1) return 1;
     ll need = 0, x = 1;
     while (x < cap) x = (ll)min<__int128_t>(cap, (__int128_t)x * a), need++;
