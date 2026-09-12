@@ -10,7 +10,7 @@ struct LineContainer : set<Line, less<>> {
         return x->p >= y->p;
     }
     void add(ll k, ll m) {
-        auto [x, f] = emplace(k, m, LLONG_MAX);
+        auto [x, f] = insert(Line{k, m, LLONG_MAX});
         if (!f) chmax(x->m, m);
         auto y = next(x);
         while (y != end() && isect(x, y)) y = erase(y);
