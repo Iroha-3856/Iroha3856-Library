@@ -32,8 +32,8 @@ struct Modint {
     }
     // x を加え、正規化した自身を返す。
     Modint& operator+=(Modint x) {
-        value += x.value;
-        if (value >= mod) value -= mod;
+        ll sum = (ll)value + x.value;
+        value = (int)(sum >= mod ? sum - mod : sum);
         return *this;
     }
     // x を引き、正規化した自身を返す。
