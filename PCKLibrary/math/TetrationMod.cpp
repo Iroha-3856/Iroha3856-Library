@@ -29,9 +29,13 @@ ll powerModTetration(ll a, ll n, ll mod) {
     return ret;
 }
 
-// min(a^n, cap) を巨大な冪を生成せず返す。
+// min(a^n, cap) を 0^0=1 の規約で巨大な冪を生成せず返す。cap>=0。
 ll powerCapped(ll a, ll n, ll cap) {
-    if (cap <= 1) return cap;
+    assert(a >= 0 and n >= 0 and cap >= 0);
+    if (cap == 0) return 0;
+    if (n == 0) return 1;
+    if (a == 0) return 0;
+    if (cap == 1) return 1;
     __int128_t ret = 1, x = a;
     while (n) {
         if (n & 1) ret = min<__int128_t>(cap, ret * x);
@@ -43,10 +47,11 @@ ll powerCapped(ll a, ll n, ll cap) {
 
 // min(a↑↑height, cap) を返し、指数が十分大きいかの判定に使う。
 ll towerCapped(ll a, ll height, ll cap) {
-    if (cap <= 1) return cap;
+    if (cap == 0) return 0;
     if (height == 0) return 1;
+    if (a == 0) return min(height % 2 == 0 ? 1LL : 0LL, cap);
+    if (cap == 1) return 1;
     if (height == 1) return min(a, cap);
-    if (a == 0) return height % 2 == 0 ? 1 : 0;
     if (a == 1) return 1;
     ll need = 0, x = 1;
     while (x < cap) x = (ll)min<__int128_t>(cap, (__int128_t)x * a), need++;

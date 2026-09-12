@@ -1,4 +1,4 @@
-// Static Top Tree。構築 O(N log N)、頂点値の一点更新 O(log N)
+// Static Top Tree。構築 O(N)、この単純な平衡化では頂点値の一点更新 O(log^2 N)
 // DP は path / point cluster の両方を表せる型にする。結合の引数順は根から葉の順
 // makeVertex(v): 頂点 v の path cluster
 // addEdge(path): light child の path を親側境界だけの point cluster にする
@@ -11,7 +11,8 @@
 // 頂点 v の外部値を変更した後 tree.update(v) を呼ぶと、tree.allProd() が木全体の新しい DP。
 // rake は左右交換可能な point cluster の併合、compress は根側から葉側の順を保つ必要がある。
 // 単純な頂点和なら addEdge は恒等、残り三つの二項演算は加算にすればよい。
-// 使いどころ: 木の形は固定で頂点値だけ変化し、木全体の DP を各更新 O(log N) で再計算したい場合。
+// 使いどころ: 木の形は固定で頂点値だけ変化し、木全体の DP を各更新 O(log^2 N) で再計算したい場合。
+// heavy path と light child 群を個数で平衡化するため、cluster 木の高さは最悪 O(log^2 N)。
 // path cluster は境界を二つ、point cluster は親側境界だけを持つと考えると五演算の型を決めやすい。
 // Rake は同じ親側境界を共有する light subtree を束ね、Compress は heavy path を上から下へつなぐ。
 // 具体例: 頂点和では makeVertex(v)=weight[v] とし、外部 weight[v] 更新後に update(v) を呼ぶ。
@@ -34,7 +35,7 @@ struct StaticTopTree {
     function<DP(const DP&, const DP&)> addVertex;
     function<DP(const DP&, const DP&)> compress;
 
-    // 木 g と五つの cluster 演算から balanced な Static Top Tree を構築する。
+    // 木 g と五つの cluster 演算から Static Top Tree を構築する。
     StaticTopTree(const vector<vector<int>>& g,
                   function<DP(int)> vertexFunction,
                   function<DP(const DP&)> edgeFunction,

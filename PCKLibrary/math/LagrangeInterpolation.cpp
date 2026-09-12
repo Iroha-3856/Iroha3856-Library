@@ -5,6 +5,7 @@
 // T y = lagrangeEvaluate(xs, ys, x); で相異なる標本点 (xs[i], ys[i]) を通る次数<Nの値を得る。
 // xs[i]=i が連続するときは lagrangeConsecutive(ys, x) を使えば O(N)。
 // T は modint や有理数など除算可能な体。合成数 mod で分母が非可逆になる型は使えない。
+// lagrangeConsecutive では T(0),...,T(N-1) が相異なること。mod p なら N<=p が必要。
 template<class T>
 // 相異なる点 (xs[i], ys[i]) を通る次数 N 未満の多項式を x で評価する。
 T lagrangeEvaluate(const vector<T>& xs, const vector<T>& ys, T x) {

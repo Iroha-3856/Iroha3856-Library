@@ -6,7 +6,7 @@
 // component の番号は dag のトポロジカル順なので、辺は小さい番号から大きい番号へ向かう。
 // 使いどころ: 有向閉路を一頂点へまとめる、2-SAT、相互到達可能性の判定。
 // 具体例: 0->1, 1->0, 1->2 なら groups は {0, 1} と {2} の二成分になる。
-// groups 内の頂点順には意味を持たせず、成分間の処理順には component 番号を使う。
+// groups 内の頂点順と dag の隣接順には意味を持たせず、成分間の処理順には component 番号を使う。
 struct StronglyConnectedComponents {
     int N;
     vector<vector<int>> G, rG, groups, dag;
@@ -16,7 +16,7 @@ struct StronglyConnectedComponents {
     StronglyConnectedComponents(const vector<vector<int>>& g) : N((int)g.size()), G(g), rG(N) {
         build();
     }
-    // Kosaraju 法で groups/component を求め、重複辺なしの dag を構築する。
+    // Kosaraju 法で groups/component を求め、重複辺なしの dag を線形時間で構築する。
     void build() {
         groups.clear();
         dag.clear();
@@ -55,13 +55,26 @@ struct StronglyConnectedComponents {
             }
         }
         dag.assign(groups.size(), {});
-        for (int v = 0; v < N; v++) for (int to : G[v]) {
-            int a = component[v], b = component[to];
-            if (a != b) dag[a].push_back(b);
+        vector<int> seen(groups.size(), -1);
+        for (int a = 0; a < (int)groups.size(); a++) {
+            for (int v : groups[a]) for (int to : G[v]) {
+                int b = component[to];
+                if (a != b and seen[b] != a) {
+                    seen[b] = a;
+                    dag[a].push_back(b);
+                }
+            }
         }
-        for (auto& A : dag) {
-            sort(A.begin(), A.end());
-            A.erase(unique(A.begin(), A.end()), A.end());
-        }
+
+        // 短さ優先なら上の dag 構築を以下に置換してもよい。sort 分だけ最悪 O(M log M)。
+        // dag.assign(groups.size(), {});
+        // for (int v = 0; v < N; v++) for (int to : G[v]) {
+        //     int a = component[v], b = component[to];
+        //     if (a != b) dag[a].push_back(b);
+        // }
+        // for (auto& A : dag) {
+        //     sort(A.begin(), A.end());
+        //     A.erase(unique(A.begin(), A.end()), A.end());
+        // }
     }
 };
