@@ -1,4 +1,4 @@
-// 無向グラフの二辺連結成分・二重頂点連結成分。多重辺対応、O(N + M)
+// 無向グラフの二辺連結成分・二重頂点連結成分。多重辺対応、自己ループ非対応、O(N + M)
 // twoEdgeComponent は頂点の成分番号、vertexBlocks は各 block の頂点集合
 // 使い方:
 // BiconnectedComponents graph(N); graph.addEdge(u, v); を全辺に行って graph.build();

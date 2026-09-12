@@ -6,6 +6,7 @@
 // auto [next, opt] = divideAndConquerDP(previous, INF, cost); として DP の一層を更新する。
 // cost(i, j) は 0<=i<j<N に対する区間コスト。next[0]=INF、opt[0]=-1 のまま。
 // previous[i] または cost(i,j) が infinity なら到達不能として遷移候補から除外する。
+// 各 j=1,...,N-1 について有限な遷移候補が少なくとも一つ存在することを仮定する。
 // 最適 i が j の増加に対して非減少であることを問題側で証明してから使う。
 // K 分割 DP なら previous=next を K 回繰り返し、必要なら各層の opt を保存して復元する。
 template<class T, class Cost>

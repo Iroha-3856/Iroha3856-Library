@@ -1,4 +1,4 @@
-// range chmin / chmax / add / sum。0-indexed、半開区間、各操作償却 O(log N)
+// range chmin / chmax / add / sum。0-indexed、半開区間。chmin/chmax は償却 O(log^2 N)、add/sum は O(log N)
 // 一般化すると、更新ごとに「変化なしの枝刈り条件」と「節点へ一括適用できる条件」を定め、
 // 後者を満たさない節点だけ push して降りる。各要素が失敗側へ降りる回数の償却解析が必要
 // 使い方:
