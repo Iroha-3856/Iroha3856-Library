@@ -14,11 +14,14 @@ struct StronglyConnectedComponents {
 
     // 有向隣接リスト g を受け取り、SCC と縮約 DAG まで直ちに構築する。
     StronglyConnectedComponents(const vector<vector<int>>& g) : N((int)g.size()), G(g), rG(N) {
-        for (int v = 0; v < N; v++) for (int to : G[v]) rG[to].push_back(v);
         build();
     }
     // Kosaraju 法で groups/component を求め、重複辺なしの dag を構築する。
     void build() {
+        groups.clear();
+        dag.clear();
+        rG.assign(N, {});
+        for (int v = 0; v < N; v++) for (int to : G[v]) rG[to].push_back(v);
         vector<int> used(N), order;
         for (int s = 0; s < N; s++) if (!used[s]) {
             vector<pair<int, int>> st = {{s, 0}};
@@ -51,7 +54,7 @@ struct StronglyConnectedComponents {
                 }
             }
         }
-        dag.resize(groups.size());
+        dag.assign(groups.size(), {});
         for (int v = 0; v < N; v++) for (int to : G[v]) {
             int a = component[v], b = component[to];
             if (a != b) dag[a].push_back(b);

@@ -3,6 +3,7 @@
 // 無向木から LowestCommonAncestor tree(G, root); を作る。
 // lca(u, v) は最近共通祖先、dist(u, v) は辺数、jump(v, k) は k 個上の祖先を返す。
 // kthVertex(u, v, k) は u から v へのパス上で u を 0 番目とする頂点。範囲外は -1。
+// G は空でない連結な無向木、root は有効な頂点番号とする。
 // 使いどころ: 静的木で LCA、距離、祖先、パス上の位置を O(log N) で求める場合。
 // 具体例: パス 2-1-3 なら lca(2, 3)=1、dist(2, 3)=2、kthVertex(2, 3, 1)=1。
 // par[k][v] は v の 2^k 個上の祖先。辺重みは保持せず、dist は辺数である。
@@ -14,6 +15,7 @@ struct LowestCommonAncestor {
     // 無向木 G を root で根付け、2^k 個上の祖先表を構築する。
     LowestCommonAncestor(const vector<vector<int>>& G, int root = 0) {
         int N = (int)G.size();
+        assert(N > 0 and 0 <= root and root < N);
         log = 1;
         while ((1 << log) < N) log++;
         par.assign(log, vector<int>(N, -1));

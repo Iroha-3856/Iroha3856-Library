@@ -13,13 +13,21 @@ struct ConvexHullTrick {
         // 座標 x における直線 ax+b の値を返す。
         ll get(ll x) const { return a * x + b; }
     };
-    vector<Line> line;
     int head = 0;
+    vector<Line> line;
 
-    // 傾き順の三直線 a, b, c のうち、最小値包絡で b が不要かを overflow なしで判定する。
+    // 傾き順の三直線 a, b, c のうち、最小値包絡で b が不要かを 128 bit 内で厳密判定する。
     bool unnecessary(Line a, Line b, Line c) const {
-        return (__int128_t)(b.b - a.b) * (b.a - c.a)
-            >= (__int128_t)(c.b - b.b) * (a.a - b.a);
+        __int128_t x = (__int128_t)b.b - a.b;
+        __int128_t y = (__int128_t)c.b - b.b;
+        __uint128_t p = (__uint128_t)((__int128_t)b.a - c.a);
+        __uint128_t q = (__uint128_t)((__int128_t)a.a - b.a);
+        if (x >= 0 and y < 0) return true;
+        if (x < 0 and y >= 0) return false;
+        __uint128_t ax = x < 0 ? (__uint128_t)(-x) : (__uint128_t)x;
+        __uint128_t ay = y < 0 ? (__uint128_t)(-y) : (__uint128_t)y;
+        if (x >= 0) return ax * p >= ay * q;
+        return ax * p <= ay * q;
     }
     // 傾き a が既存末尾より真に小さい直線 y=ax+b を追加する。
     void addLine(ll a, ll b) {

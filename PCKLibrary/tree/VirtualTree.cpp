@@ -2,7 +2,7 @@
 // 指定頂点と必要な LCA だけからなる Auxiliary / Virtual Tree。構築 O(K log K log N)
 // 返す辺は元の木の頂点番号で親から子。vertices は Euler Tour 順
 // 使い方:
-// 依存先を先に置き VirtualTree tree(G, root); を一度構築する。
+// 依存先を先に置き VirtualTree tree(G, root); を一度構築する。G は空でない連結な無向木。
 // auto result = tree.build(queryVertices); とすると、必要な LCA を加えた頂点と親子辺を返す。
 // result.edges の端点は圧縮後の添字でなく元の頂点番号。辺重みは元木上の距離から計算する。
 // 入力頂点の重複は build 内で除去され、空集合なら空の結果を返す。
@@ -23,6 +23,7 @@ struct VirtualTree {
     // 元木 g を root で根付け、祖先判定用 Euler Tour と LCA を前計算する。
     VirtualTree(const vector<vector<int>>& g, int root = 0) : N((int)g.size()), G(g),
         in(N), out(N), lca(g, root) {
+        assert(N > 0 and 0 <= root and root < N);
         dfs(root, -1);
     }
     // 各頂点の進入時刻 in と部分木終了時刻 out を求める。
