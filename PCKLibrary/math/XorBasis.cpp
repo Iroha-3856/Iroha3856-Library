@@ -1,11 +1,11 @@
-// GF(2) 線形基底。insert / contains / maxXor は O(B^2)、kth は O(B)
+// GF(2) 線形基底。insert / contains / maxXor / kth は O(B)
 // 基底を reduced row echelon form に保ち、kth は表現可能値の昇順 0-indexed
 // 使いどころ: 与えられた数の部分集合 XOR が作れるか、または作れる値の最大・k 番目を求める場合。
 // 具体例: 1, 2 を insert すると表現可能値は 0, 1, 2, 3 で、kth(2)=2、maxXor()=3。
 // 使い方:
 // XorBasis<unsigned long long> basis; basis.insert(x); で XOR 線形空間へ追加する。
 // contains(x) は表現可能性、maxXor(seed) は seed と表現可能値の XOR の最大値。
-// kth(k) は相異なる表現可能値の k 番目で、範囲外なら numeric_limits<T>::max()。
+// kth(k) は相異なる表現可能値の k 番目。0 <= k < 2^rank を満たすこと。
 // insert が false なら x は既存基底に従属。重複する部分集合の個数は管理しない。
 template<class T = unsigned long long, int B = numeric_limits<T>::digits>
 struct XorBasis {
@@ -36,9 +36,9 @@ struct XorBasis {
         for (int i = B - 1; i >= 0; i--) x = max(x, x ^ basis[i]);
         return x;
     }
-    // 表現可能な相異なる値を昇順に見た 0-indexed k 番目を返す。
+    // 表現可能な相異なる値を昇順に見た 0-indexed k 番目を返す。k は範囲内とする。
     T kth(unsigned long long k) const {
-        assert(rank == 64 or k < (1ULL << rank));
+        assert(rank >= 64 or k < (1ULL << rank));
         T ret = 0;
         int j = 0;
         for (int i = 0; i < B; i++) if (basis[i]) {
