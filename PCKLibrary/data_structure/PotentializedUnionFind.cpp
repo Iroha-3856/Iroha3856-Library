@@ -2,7 +2,8 @@
 // 使い方:
 // PotentializedUnionFind<ll> uf(N); uf.merge(x, y, w); で weight[y]-weight[x]=w を追加する。
 // same(x, y) のとき uf.diff(x, y) がその差を返す。非連結頂点へ diff を呼ばないこと。
-// merge は矛盾を判定しない。同じ成分なら false なので、必要なら既存の diff と照合する。
+// merge は追加条件と既存条件が整合するなら true、矛盾するなら false を返す。
+// 異なる成分なら条件を追加して true、同じ成分なら既存の diff と w の整合性だけを判定する。
 // 使いどころ: 頂点間の差分制約を追加しながら、二点間の相対値を問い合わせる場合。
 // 具体例: merge(0, 1, 3), merge(1, 2, 4) の後は diff(0, 2)=7。
 // T は加減算・零との比較ができる型。w の向きは常に weight[y]-weight[x]。

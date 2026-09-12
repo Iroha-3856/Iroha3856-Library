@@ -29,7 +29,8 @@ struct PartiallyPersistentUnionFind {
     int size(int v, int t) const {
         v = root(v, t);
         const auto& H = sizeHistory[v];
-        auto it = upper_bound(H.begin(), H.end(), pair<int, int>{t, INF});
+        auto it = upper_bound(H.begin(), H.end(),
+                              pair<int, int>{t, numeric_limits<int>::max()});
         return prev(it)->second;
     }
     // 現在状態で u と v を併合し、時刻を 1 進める。併合済みなら false。

@@ -6,7 +6,7 @@
 // add(i)/erase(i) は A[i] の寄与を現在区間へ追加・削除し、answer(id) で答えを保存する。
 // MoWithUpdates は入力順に addUpdate() と addQuery() を呼ぶ。applyUpdate(t, forward, l, r) は
 // t 番目の更新を適用/取消しし、更新位置が [l, r) 内なら集計状態も同時に直す。
-// TreeMo は addQuery(u, v) 後 run(toggle, answer)。toggle(v) は頂点 v の採用状態を反転する。
+// TreeMo は空でない連結木に対し addQuery(u, v) 後 run(toggle, answer)。toggle(v) は採用状態を反転する。
 struct Mo {
     struct Query { int l, r, id; };
     int N;
@@ -56,6 +56,7 @@ struct MoWithUpdates {
     void addUpdate() { updates++; }
     // 現時点までの更新数と半開区間 [l, r) を query として追加し、ID を返す。
     int addQuery(int l, int r) {
+        assert(0 <= l and l <= r and r <= N);
         int id = (int)query.size();
         query.push_back({l, r, updates, id});
         return id;
@@ -93,9 +94,10 @@ struct TreeMo {
     vector<int> depth, in, out, euler;
     vector<Query> query;
 
-    // 無向木 g を root で二重 Euler Tour し、LCA の祖先表も構築する。
+    // 空でない無向木 g を root で二重 Euler Tour し、LCA の祖先表も構築する。
     TreeMo(const vector<vector<int>>& g, int root = 0) : N((int)g.size()), G(g), depth(N),
         in(N), out(N), euler(2 * N) {
+        assert(N > 0 and 0 <= root and root < N);
         log = 1;
         while ((1 << log) < N) log++;
         parent.assign(log, vector<int>(N, -1));
@@ -124,6 +126,7 @@ struct TreeMo {
     }
     // 両端を含む u-v 頂点パスクエリを追加し、query ID を返す。
     int addQuery(int u, int v) {
+        assert(0 <= u and u < N and 0 <= v and v < N);
         if (in[u] > in[v]) swap(u, v);
         int w = lca(u, v), id = (int)query.size();
         if (w == u) query.push_back({in[u], in[v] + 1, -1, id});

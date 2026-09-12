@@ -86,6 +86,7 @@ struct BiconnectedComponents {
     }
     // 二辺連結成分を頂点、元の橋を辺とする forest を返す。build 後に呼ぶ。
     vector<vector<int>> bridgeTree() const {
+        if (N == 0) return {};
         int C = *max_element(twoEdgeComponent.begin(), twoEdgeComponent.end()) + 1;
         vector<vector<int>> T(C);
         for (int id : bridge) {

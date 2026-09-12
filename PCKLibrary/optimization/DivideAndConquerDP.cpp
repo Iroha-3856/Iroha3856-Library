@@ -5,6 +5,7 @@
 // 使い方:
 // auto [next, opt] = divideAndConquerDP(previous, INF, cost); として DP の一層を更新する。
 // cost(i, j) は 0<=i<j<N に対する区間コスト。next[0]=INF、opt[0]=-1 のまま。
+// previous[i] または cost(i,j) が infinity なら到達不能として遷移候補から除外する。
 // 最適 i が j の増加に対して非減少であることを問題側で証明してから使う。
 // K 分割 DP なら previous=next を K 回繰り返し、必要なら各層の opt を保存して復元する。
 template<class T, class Cost>
@@ -20,7 +21,10 @@ pair<vector<T>, vector<int>> divideAndConquerDP(const vector<T>& previous, T inf
         int m = (l + r) / 2;
         int to = min(m - 1, optR);
         for (int i = optL; i <= to; i++) {
-            T x = previous[i] + cost(i, m);
+            if (previous[i] == infinity) continue;
+            T c = cost(i, m);
+            if (c == infinity) continue;
+            T x = previous[i] + c;
             if (x < next[m]) next[m] = x, argmin[m] = i;
         }
         int opt = argmin[m] == -1 ? optL : argmin[m];

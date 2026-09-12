@@ -11,6 +11,7 @@
 template<class T, class Get>
 // totally monotone 行列の各行について最左 argmin 列を返す。
 vector<int> smawk(int H, int W, const Get& get) {
+    assert(H > 0 and W > 0);
     vector<int> answer(H, -1);
     // 指定された部分行・部分列について、列削減と奇数行再帰を行う。
     function<void(const vector<int>&, const vector<int>&)> solve =
@@ -28,14 +29,16 @@ vector<int> smawk(int H, int W, const Get& get) {
         vector<int> odd;
         for (int i = 1; i < (int)rows.size(); i += 2) odd.push_back(rows[i]);
         solve(odd, reduced);
-        int left = 0;
+        int left = 0, right = 0;
         for (int i = 0; i < (int)rows.size(); i += 2) {
             if (i > 0) {
-                left = (int)(find(reduced.begin(), reduced.end(), answer[rows[i - 1]]) - reduced.begin());
+                while (reduced[left] != answer[rows[i - 1]]) left++;
             }
-            int right = (int)reduced.size() - 1;
+            right = max(right, left);
             if (i + 1 < (int)rows.size()) {
-                right = (int)(find(reduced.begin(), reduced.end(), answer[rows[i + 1]]) - reduced.begin());
+                while (reduced[right] != answer[rows[i + 1]]) right++;
+            } else {
+                right = (int)reduced.size() - 1;
             }
             int best = reduced[left];
             for (int j = left + 1; j <= right; j++) {
