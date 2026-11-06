@@ -119,6 +119,8 @@ T rangeSum(const vector<T>& A, int l, int r) {
   - queue / deque 上のモノイド積、非可換演算の積順序
 - [x] `[B]` 動的 Segment Tree — `data_structure/DynamicSegmentTree.cpp`
   - 大きな整数添字範囲の一点代入・一点作用・区間積、非可換モノイド
+- [x] `[B]` Range Set（区間集合）— `data_structure/RangeSet.cpp`
+  - 半開区間の追加・削除・統合、点・区間の包含判定、mex、被覆長
 - [x] `[B]` Binary Trie — `data_structure/BinaryTrie.cpp`
   - XOR 最小・最大、全体 XOR、個数管理
 - [x] `[B]` 64 分木 set — `data_structure/Set64.cpp`
