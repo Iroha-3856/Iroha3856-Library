@@ -117,6 +117,8 @@ T rangeSum(const vector<T>& A, int l, int r) {
   - 結合則だけを仮定した静的区間積、非可換演算
 - [x] `[B]` SWAG（Sliding Window Aggregation）— `data_structure/SlidingWindowAggregation.cpp`
   - queue / deque 上のモノイド積、非可換演算の積順序
+- [x] `[B]` 動的 Segment Tree — `data_structure/DynamicSegmentTree.cpp`
+  - 大きな整数添字範囲の一点代入・一点作用・区間積、非可換モノイド
 - [x] `[B]` Binary Trie — `data_structure/BinaryTrie.cpp`
   - XOR 最小・最大、全体 XOR、個数管理
 - [x] `[B]` 64 分木 set — `data_structure/Set64.cpp`
@@ -273,6 +275,8 @@ T rangeSum(const vector<T>& A, int l, int r) {
   - 点包含、直径（rotating calipers）、convex cut、接線
 - [x] `[B]` Minkowski sum — `geometry/MinkowskiSum.cpp`
   - 凸多角形の辺ベクトル merge、退化辺と始点の正規化
+- [x] `[B]` 偏角ソート（Argument Sort）— `geometry/ArgumentSort.cpp`
+  - 整数座標を外積で厳密比較、零ベクトル・同方向ベクトルの順序
 - [x] `[B]` 最近点対 — `geometry/ClosestPair.cpp`
 - [x] `[B]` 円 — `geometry/Circle.cpp`
   - 外接円、内接円、共通接線、円の共通部分面積
