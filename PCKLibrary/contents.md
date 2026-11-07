@@ -248,6 +248,8 @@ T rangeSum(const vector<T>& A, int l, int r) {
   - パターン検索、文字列の周期、境界をまたぐ一致長
 - [x] `[A]` KMP / prefix function — `string/KMP.cpp`
   - パターン検索、failure link、最小周期
+- [x] `[B]` 数式の構文解析（Expression Parser）— `string/ExpressionParser.cpp`
+  - 整数の四則演算、括弧、単項符号、優先順位と左結合
 - [x] `[A]` Trie — `string/Trie.cpp`
   - 挿入、完全一致、通過回数
 - [x] `[B]` Aho-Corasick 法 — `string/AhoCorasick.cpp`
